@@ -1,0 +1,36 @@
+{
+  "adresses": [
+    {
+      "domain": "test",
+      "ip": "ip"
+    },
+    {
+      "domain": "aest",
+      "ip": "ip!"
+    },
+    {
+      "domain": "test12",
+      "ip": "255.255.255.255"
+    },
+    {
+      "domain": "testYES",
+      "ip": "256.255.255.1"
+    },
+    {
+      "domain": "test",
+      "ip": "ip"
+    },
+    {
+      "domain": "best.com",
+      "ip": "ip"
+    },
+    {
+      "domain": "test132132.com",
+      "ip": "ipforreal"
+    },
+    {
+      "domain": "twitter.com",
+      "ip": "100.0.0.0"
+    }
+  ]
+}

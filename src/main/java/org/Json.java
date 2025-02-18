@@ -1,0 +1,139 @@
+package org;
+
+import java.util.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+public class Json {
+    String jsonString;
+    List<Map<String, String>> ADRESSES;
+
+    public Json() {
+        this.jsonString = null;
+        this.ADRESSES = new ArrayList<>();
+    }
+
+    public Json(String jsonString) {
+        this.jsonString = jsonString;
+        this.ADRESSES = parse(jsonString);
+    }
+    public static List<Map<String, String>> parse(String json){
+        int start = json.indexOf("[");
+        int end = json.lastIndexOf("]");
+        if (start == -1 || end == -1) {
+            System.out.println("Ошибка: JSON не содержит массив.");
+            return new ArrayList<>();
+        }
+        String peopleArray = json.substring(start + 1, end);
+
+        String[] objects = peopleArray.split("\\},\\s*\\{");
+
+        List<Map<String, String>> peopleList = new ArrayList<>();
+        Set<String> uniqueValues = new HashSet<>();
+
+        for (String obj : objects) {
+            obj = obj.replace("{", "").replace("}", "");
+            String[] pairs = obj.split(",");
+
+            Map<String, String> person = new HashMap<>();
+            Set<String> currentValues = new HashSet<>();
+            boolean isDuplicate = false;
+
+            for (String pair : pairs) {
+                String[] keyValue = pair.split(":");
+                if (keyValue.length != 2) continue;
+
+                String key = keyValue[0].trim().replace("\"", "");
+                String value = keyValue[1].trim().replace("\"", "");
+
+                person.put(key, value);
+
+                if (uniqueValues.contains(value)) {
+                    isDuplicate = true;
+                }
+                currentValues.add(value);
+            }
+
+            if (!isDuplicate) {
+                peopleList.add(person);
+                uniqueValues.addAll(currentValues);
+            }
+        }
+        return peopleList;
+    }
+
+    public boolean validate(String string) {
+        try {
+            InetAddress ip = InetAddress.getByName(string);
+            if (ip instanceof java.net.Inet4Address) {
+                return true;
+            }
+            else{
+                //
+            }
+        } catch (UnknownHostException e) {
+            System.out.println("Ошибка: некорректный IP-адрес.");
+        }
+        return false;
+    }
+
+    public void removeObj(String value) {
+        ADRESSES.removeIf(person -> person.get("domain").equals(value) || person.get("ip").equals(value));
+    }
+
+    public void removeObjByDomain(String domain) {
+        ADRESSES.removeIf(person -> person.get("domain").equals(domain));
+        System.out.println("Удален домен: " + domain);
+    }
+
+    public void removeObjByIp(String ip) {
+        ADRESSES.removeIf(person -> person.get("ip").equals(ip));
+        System.out.println("Удален IP-адрес: " + ip);
+    }
+
+    public void showAll() {
+        for (Map<String, String> person : ADRESSES) {
+            System.out.println("domain: " + person.get("domain") + ", ip: " + person.get("ip"));
+            validate(person.get("ip"));
+        }
+    }
+
+    public String findDomain(String ip) {
+        for (Map<String, String> person : ADRESSES) {
+            if (person.get("ip").equals(ip)) {
+                return person.get("domain");
+            }
+        }
+        return "Домен не найден.";
+    }
+
+    public String findIp(String domain) {
+        for (Map<String, String> person : ADRESSES) {
+            if (person.get("domain").equals(domain)) {
+                return person.get("ip");
+            }
+        }
+        return "IP-адрес не найден.";
+    }
+
+    public void addObj(String domain, String ip) {
+        if (!validate(ip)) {
+            System.out.println("Добавление невозможно: некорректный IP-адрес.");
+            return;
+        }
+
+        for (Map<String, String> person : ADRESSES) {
+            if (person.get("domain").equals(domain) || person.get("ip").equals(ip)) {
+                System.out.println("Добавление невозможно: домен или IP уже существуют.");
+                return;
+            }
+        }
+
+        Map<String, String> obj = new HashMap<>();
+        obj.put("domain", domain);
+        obj.put("ip", ip);
+        ADRESSES.add(obj);
+        System.out.println("Добавлено: " + domain + " -> " + ip);
+    }
+}
+
