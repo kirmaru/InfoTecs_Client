@@ -92,6 +92,7 @@ public class Json {
     }
 
     public void showAll() {
+        ADRESSES.sort(Comparator.comparing(o -> o.get("domain")));
         for (Map<String, String> person : ADRESSES) {
             System.out.println("domain: " + person.get("domain") + ", ip: " + person.get("ip"));
             validate(person.get("ip"));
@@ -134,6 +135,21 @@ public class Json {
         obj.put("ip", ip);
         ADRESSES.add(obj);
         System.out.println("Добавлено: " + domain + " -> " + ip);
+    }
+
+    public String toJsonString() {
+        StringBuilder jsonBuilder = new StringBuilder("[");
+        for (int i = 0; i < ADRESSES.size(); i++) {
+            Map<String, String> person = ADRESSES.get(i);
+            jsonBuilder.append("{\"domain\":\"").append(person.get("domain"))
+                    .append("\", \"ip\":\"").append(person.get("ip"))
+                    .append("\"}");
+            if (i < ADRESSES.size() - 1) {
+                jsonBuilder.append(", ");
+            }
+        }
+        jsonBuilder.append("]");
+        return jsonBuilder.toString();
     }
 }
 

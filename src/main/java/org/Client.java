@@ -2,6 +2,7 @@ package org;
 
 import com.jcraft.jsch.*;
 import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import java.util.Scanner;
 
 public class Client {
@@ -25,8 +26,6 @@ public class Client {
         LOGIN = scanner.nextLine();
         System.out.print("Введите пароль SFTP-сервера: ");
         PASSWORD = scanner.nextLine();
-        connect(ADRESS, PORT, LOGIN, PASSWORD);
-
 
         if(connect(ADRESS, PORT, LOGIN, PASSWORD)){
             System.out.println("Введите название файла:");
@@ -72,6 +71,7 @@ public class Client {
                         break;
                     case 6:
                         System.out.println("Программа завершена");
+                        saveFile(FILENAME, json.toJsonString());
                         System.exit(0);
                 }
             }
@@ -86,6 +86,16 @@ public class Client {
         }catch (SftpException e) {
             System.err.println("Ошибка загрузки файла: " + e.getMessage());
             return "[]";
+        }
+    }
+
+    private static void saveFile(String FILENAME, String data){
+        try{
+            InputStream inputStream = new ByteArrayInputStream(data.getBytes());
+            channel.put(inputStream, FILENAME);
+            System.out.println("Файл успешно сохранен на сервере.");
+        }catch (SftpException e){
+            System.err.println("Ошибка сохранения файла: " + e.getMessage());
         }
     }
 
