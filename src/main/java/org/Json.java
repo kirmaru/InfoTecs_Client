@@ -68,27 +68,39 @@ public class Json {
             if (ip instanceof java.net.Inet4Address) {
                 return true;
             }
-            else{
-                //
-            }
         } catch (UnknownHostException e) {
-            System.out.println("Ошибка: некорректный IP-адрес.");
+            System.out.print(" Предупреждение: некорректный IP-адрес.");
         }
         return false;
     }
 
     public void removeObj(String value) {
-        ADRESSES.removeIf(person -> person.get("domain").equals(value) || person.get("ip").equals(value));
+        boolean removed = ADRESSES.removeIf(person -> person.get("domain").equals(value) || person.get("ip").equals(value));
+        if (removed) {
+            System.out.println("Запись с '" + value + "' была удалена.");
+        } else {
+            System.out.println("Запись с '" + value + "' не найдена.");
+        }
     }
 
     public void removeObjByDomain(String domain) {
-        ADRESSES.removeIf(person -> person.get("domain").equals(domain));
-        System.out.println("Удален домен: " + domain);
+        boolean removed = ADRESSES.removeIf(person -> person.get("domain").equals(domain));
+
+        if (removed) {
+            System.out.println("Удалена запись с доменом: " + domain);
+        } else {
+            System.out.println("Запись с доменом '" + domain + "' не найдена.");
+        }
     }
 
     public void removeObjByIp(String ip) {
-        ADRESSES.removeIf(person -> person.get("ip").equals(ip));
-        System.out.println("Удален IP-адрес: " + ip);
+        boolean removed = ADRESSES.removeIf(person -> person.get("ip").equals(ip));
+
+        if (removed) {
+            System.out.println("Удалена запись с IP-адресом: " + ip);
+        } else {
+            System.out.println("Запись с IP-адресом '" + ip + "' не найдена.");
+        }
     }
 
     public void showAll() {

@@ -104,7 +104,7 @@ public class Client {
             JSch jsch = new JSch();
             session = jsch.getSession(login, host, port);
             session.setPassword(password);
-            session.setConfig("StrictHostKeyChecking", "no");
+            session.setConfig("StrictHostKeyChecking", "ask");
 
             session.connect();
             System.out.println("Сессия установлена");
