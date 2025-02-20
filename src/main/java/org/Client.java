@@ -36,10 +36,19 @@ public class Client {
         PASSWORD = scanner.nextLine();
 
         if(connect(ADRESS, PORT, LOGIN, PASSWORD)){
-            System.out.println("Введите название файла:");
-            FILENAME = scanner.nextLine();
-            jsonString = downloadFile(FILENAME);
-            json = new Json(jsonString);
+            while(true) {
+                System.out.println("Введите название файла:");
+                FILENAME = scanner.nextLine();
+                jsonString = downloadFile(FILENAME);
+                json = new Json(jsonString);
+
+                if (jsonString.equals("[]") || json.ADRESSES.isEmpty()) {
+                    System.out.println("Попробуйте снова.");
+                } else {
+                    System.out.println("Файл успешно загружен.");
+                    break;
+                }
+            }
 
             while(true){
                 System.out.println("\n===== МЕНЮ КЛИЕНТА =====");
@@ -112,7 +121,7 @@ public class Client {
             JSch jsch = new JSch();
             session = jsch.getSession(login, host, port);
             session.setPassword(password);
-            session.setConfig("StrictHostKeyChecking", "ask");
+            session.setConfig("StrictHostKeyChecking", "no"); //Предупреждение: не использовать отключенную проверку ключа сервера, только для тестирования.
 
             session.connect();
             System.out.println("Сессия установлена");

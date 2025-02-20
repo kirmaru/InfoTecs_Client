@@ -106,7 +106,7 @@ public class Json {
     public void showAll() {
         ADRESSES.sort(Comparator.comparing(o -> o.get("domain")));
         for (Map<String, String> person : ADRESSES) {
-            System.out.println("domain: " + person.get("domain") + ", ip: " + person.get("ip"));
+            System.out.print("\n domain: " + person.get("domain") + ", ip: " + person.get("ip"));
             validate(person.get("ip"));
         }
     }
