@@ -16,6 +16,14 @@ public class Client {
     private static Json json;
     private static String jsonString;
 
+    public Client(String address, int port, String login, String password, String filename) {
+        ADRESS = address;
+        PORT = port;
+        LOGIN = login;
+        PASSWORD = password;
+        FILENAME = filename;
+    }
+
     public static void main(String[] args){
         Scanner scanner = new Scanner(System.in);
         System.out.print("Введите адрес SFTP-сервера: ");
