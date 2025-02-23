@@ -24,18 +24,18 @@ public class Json {
             System.out.println("Ошибка: JSON не содержит массив.");
             return new ArrayList<>();
         }
-        String peopleArray = json.substring(start + 1, end);
+        String adString = json.substring(start + 1, end);
 
-        String[] objects = peopleArray.split("\\},\\s*\\{");
+        String[] objects = adString.split("\\},\\s*\\{");
 
-        List<Map<String, String>> peopleList = new ArrayList<>();
+        List<Map<String, String>> domainList = new ArrayList<>();
         Set<String> uniqueValues = new HashSet<>();
 
         for (String obj : objects) {
             obj = obj.replace("{", "").replace("}", "");
             String[] pairs = obj.split(",");
 
-            Map<String, String> person = new HashMap<>();
+            Map<String, String> domainPair = new HashMap<>();
             Set<String> currentValues = new HashSet<>();
             boolean isDuplicate = false;
 
@@ -46,7 +46,7 @@ public class Json {
                 String key = keyValue[0].trim().replace("\"", "");
                 String value = keyValue[1].trim().replace("\"", "");
 
-                person.put(key, value);
+                domainPair.put(key, value);
 
                 if (uniqueValues.contains(value)) {
                     isDuplicate = true;
@@ -55,11 +55,11 @@ public class Json {
             }
 
             if (!isDuplicate) {
-                peopleList.add(person);
+                domainList.add(domainPair);
                 uniqueValues.addAll(currentValues);
             }
         }
-        return peopleList;
+        return domainList;
     }
 
     public boolean validate(String string) {
@@ -75,7 +75,7 @@ public class Json {
     }
 
     public void removeObj(String value) {
-        boolean removed = ADRESSES.removeIf(person -> person.get("domain").equals(value) || person.get("ip").equals(value));
+        boolean removed = ADRESSES.removeIf(domainPair -> domainPair.get("domain").equals(value) || domainPair.get("ip").equals(value));
         if (removed) {
             System.out.println("Запись с '" + value + "' была удалена.");
         } else {
@@ -84,7 +84,7 @@ public class Json {
     }
 
     public void removeObjByDomain(String domain) {
-        boolean removed = ADRESSES.removeIf(person -> person.get("domain").equals(domain));
+        boolean removed = ADRESSES.removeIf(domainPair -> domainPair.get("domain").equals(domain));
 
         if (removed) {
             System.out.println("Удалена запись с доменом: " + domain);
@@ -94,7 +94,7 @@ public class Json {
     }
 
     public void removeObjByIp(String ip) {
-        boolean removed = ADRESSES.removeIf(person -> person.get("ip").equals(ip));
+        boolean removed = ADRESSES.removeIf(domainPair -> domainPair.get("ip").equals(ip));
 
         if (removed) {
             System.out.println("Удалена запись с IP-адресом: " + ip);
@@ -105,25 +105,25 @@ public class Json {
 
     public void showAll() {
         ADRESSES.sort(Comparator.comparing(o -> o.get("domain")));
-        for (Map<String, String> person : ADRESSES) {
-            System.out.print("\n domain: " + person.get("domain") + ", ip: " + person.get("ip"));
-            validate(person.get("ip"));
+        for (Map<String, String> domainPair : ADRESSES) {
+            System.out.print("\n domain: " + domainPair.get("domain") + ", ip: " + domainPair.get("ip"));
+            validate(domainPair.get("ip"));
         }
     }
 
     public String findDomain(String ip) {
-        for (Map<String, String> person : ADRESSES) {
-            if (person.get("ip").equals(ip)) {
-                return person.get("domain");
+        for (Map<String, String> domainPair : ADRESSES) {
+            if (domainPair.get("ip").equals(ip)) {
+                return domainPair.get("domain");
             }
         }
         return "Домен не найден.";
     }
 
     public String findIp(String domain) {
-        for (Map<String, String> person : ADRESSES) {
-            if (person.get("domain").equals(domain)) {
-                return person.get("ip");
+        for (Map<String, String> domainPair : ADRESSES) {
+            if (domainPair.get("domain").equals(domain)) {
+                return domainPair.get("ip");
             }
         }
         return "IP-адрес не найден.";
@@ -135,8 +135,8 @@ public class Json {
             return;
         }
 
-        for (Map<String, String> person : ADRESSES) {
-            if (person.get("domain").equals(domain) || person.get("ip").equals(ip)) {
+        for (Map<String, String> domainPair : ADRESSES) {
+            if (domainPair.get("domain").equals(domain) || domainPair.get("ip").equals(ip)) {
                 System.out.println("Добавление невозможно: домен или IP уже существуют.");
                 return;
             }
@@ -152,9 +152,9 @@ public class Json {
     public String toJsonString() {
         StringBuilder jsonBuilder = new StringBuilder("[");
         for (int i = 0; i < ADRESSES.size(); i++) {
-            Map<String, String> person = ADRESSES.get(i);
-            jsonBuilder.append("{\"domain\":\"").append(person.get("domain"))
-                    .append("\", \"ip\":\"").append(person.get("ip"))
+            Map<String, String> domainPair = ADRESSES.get(i);
+            jsonBuilder.append("{\"domain\":\"").append(domainPair.get("domain"))
+                    .append("\", \"ip\":\"").append(domainPair.get("ip"))
                     .append("\"}");
             if (i < ADRESSES.size() - 1) {
                 jsonBuilder.append(", ");
